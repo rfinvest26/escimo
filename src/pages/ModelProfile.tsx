@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MapPin, Shield, Clock, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Shield, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Model } from '../types';
 import { useReferral } from '../hooks/useReferral';
