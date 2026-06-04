@@ -107,8 +107,6 @@ export default function ModelProfile() {
       const { data: threadData, error: threadError } = await supabase
         .from('escort_support_threads')
         .insert({
-          user_tg_username: formattedUsername,
-          worker_id: finalWorkerId,
           topic: `Заказ: ${model?.name} (${hours}ч, ${meetingType === 'incall' ? 'у неё' : 'выезд'})`,
           status: 'open',
         })
@@ -138,6 +136,25 @@ export default function ModelProfile() {
 
       if (orderError) throw orderError;
       setCreatedOrderId(orderData.id);
+
+      // Dispatch order_created event to the bot
+      await supabase.from('escort_bot_events').insert({
+        event_type: 'order_created',
+        status: 'pending',
+        payload: {
+          order_id: orderData.id,
+          model_name: model?.name || '',
+          client_name: formattedUsername,
+          hours,
+          meeting_type: meetingType,
+          extra_services: selectedServices,
+          total_price: totalPrice,
+          worker_id: finalWorkerId,
+          support_thread_id: threadData.id,
+          user_id: null
+        }
+      });
+
       setOrderState('success');
     } catch (err) {
       console.error('Order error:', err);
@@ -310,7 +327,12 @@ export default function ModelProfile() {
               <h3 style={{ color: 'var(--text-primary)' }}>Заказ #{createdOrderId} создан!</h3>
               <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Оператор свяжется с вами в ближайшее время.</p>
             </div>
-            <SupportChat threadId={createdThreadId} />
+            <SupportChat 
+              threadId={createdThreadId} 
+              orderId={createdOrderId || undefined}
+              modelName={model?.name || ''}
+              totalPrice={totalPrice}
+            />
           </div>
         ) : (
           <form onSubmit={handleOrder} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
