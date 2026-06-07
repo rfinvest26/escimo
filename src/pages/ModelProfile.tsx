@@ -19,10 +19,7 @@ const CITIES_BY_COUNTRY: Record<string, string[]> = {
   TR: ['Стамбул', 'Анкара', 'Измир', 'Бурса', 'Адана', 'Анталья', 'Конья', 'Газиантеп', 'Мерсин', 'Кайсери', 'Трабзон', 'Бодрум', 'Мармарис', 'Аланья'],
 };
 
-function getOrAssignCity(modelId: number, country: string, currentCity: string | null | undefined): string {
-  if (currentCity && currentCity.toLowerCase() !== 'unknown' && currentCity.trim() !== '') {
-    return currentCity;
-  }
+function getOrAssignCity(modelId: number, country: string, _currentCity: string | null | undefined): string {
   const cacheKey = `model_city_${modelId}_${country}`;
   const cached = localStorage.getItem(cacheKey);
   if (cached) return cached;
@@ -279,20 +276,25 @@ export default function ModelProfile() {
       {/* Info */}
       <div className="profile-info">
         <div>
-          <h1 className="profile-title">{model.name}, {model.age}</h1>
-          <div className="profile-meta" style={{ marginTop: '1rem' }}>
-            <div className="profile-meta-item">
-                <MapPin size={18} /> {model ? getOrAssignCity(model.id, targetCountry, model.city || model.display_city) : '—'}
+          <h1 className="profile-title">{model.name}</h1>
+          <div className="profile-meta">
+            <div className="meta-chip">
+              {model.age} лет
             </div>
-            <div className="profile-meta-item">
-              <Shield size={18} /> Код: {model.code}
+            <div className="meta-chip">
+                <MapPin size={16} /> {model ? getOrAssignCity(model.id, targetCountry, model.city || model.display_city) : '—'}
+            </div>
+            <div className="meta-chip">
+              <Shield size={16} /> ID: {model.code}
             </div>
           </div>
         </div>
 
-        <div>
-          <div style={{ fontSize: '2rem', fontWeight: '600' }}>{model.price_per_hour} $ <span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: '400' }}>/ час</span></div>
-          <button className="btn" style={{ width: '100%', marginTop: '1rem', padding: '1rem' }} onClick={() => setIsModalOpen(true)}>
+        <div style={{ marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--accent-color)', letterSpacing: '-0.02em' }}>
+            {model.price_per_hour} $<span style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', fontWeight: '500', marginLeft: '0.25rem' }}>/ час</span>
+          </div>
+          <button className="btn mobile-hide" style={{ width: '100%', marginTop: '1.5rem', padding: '1.25rem', fontSize: '1.1rem', borderRadius: '16px' }} onClick={() => setIsModalOpen(true)}>
             Заказать встречу
           </button>
         </div>
@@ -343,7 +345,16 @@ export default function ModelProfile() {
                 className="input"
                 placeholder="@username"
                 value={tgUsername}
-                onChange={e => setTgUsername(e.target.value)}
+                onChange={e => {
+                  let val = e.target.value;
+                  if (val && !val.startsWith('@')) val = '@' + val.replace('@', '');
+                  setTgUsername(val);
+                }}
+                inputMode="text"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="done"
                 required
               />
             </div>
@@ -351,10 +362,10 @@ export default function ModelProfile() {
             <div className="form-group">
               <label className="form-label">Количество часов</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <button type="button" className="btn-outline" style={{ width: '40px', height: '40px', borderRadius: '50%', padding: 0 }}
+                <button type="button" className="btn-outline" style={{ width: '48px', height: '48px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => setHours(h => Math.max(1, h - 1))}>−</button>
                 <span style={{ fontSize: '1.25rem', fontWeight: '600', minWidth: '2rem', textAlign: 'center' }}>{hours}</span>
-                <button type="button" className="btn-outline" style={{ width: '40px', height: '40px', borderRadius: '50%', padding: 0 }}
+                <button type="button" className="btn-outline" style={{ width: '48px', height: '48px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   onClick={() => setHours(h => h + 1)}>+</button>
               </div>
             </div>
@@ -421,6 +432,17 @@ export default function ModelProfile() {
           </form>
         )}
       </BottomSheet>
+
+      {/* Sticky Bottom Order Bar for Mobile */}
+      <div className="sticky-order-bar">
+        <div>
+          <div style={{ fontSize: '1.25rem', fontWeight: '700', color: '#fff' }}>{model.price_per_hour} $ <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: '400' }}>/ час</span></div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{model.name}</div>
+        </div>
+        <button className="btn" style={{ padding: '0.8rem 1.5rem', flexShrink: 0, borderRadius: '14px' }} onClick={() => setIsModalOpen(true)}>
+          Заказать
+        </button>
+      </div>
     </div>
   );
 }

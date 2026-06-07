@@ -54,29 +54,31 @@ function App() {
         </Routes>
       </main>
 
-      <button
-        onClick={openSupport}
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundColor: 'var(--accent-color)',
-          color: 'var(--bg-color)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 8px 24px rgba(255, 59, 48, 0.4)',
-          border: 'none',
-          cursor: 'pointer',
-          zIndex: 90
-        }}
-        aria-label="Служба поддержки"
-      >
-        <MessageCircle size={28} />
-      </button>
+      {isHome && (
+        <button
+          onClick={openSupport}
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            right: '2rem',
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--accent-color)',
+            color: 'var(--bg-color)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 8px 24px rgba(255, 59, 48, 0.4)',
+            border: 'none',
+            cursor: 'pointer',
+            zIndex: 90
+          }}
+          aria-label="Служба поддержки"
+        >
+          <MessageCircle size={28} />
+        </button>
+      )}
 
       <BottomSheet
         isOpen={isSupportOpen}
@@ -123,7 +125,16 @@ function App() {
               className="input"
               placeholder="@username"
               value={usernameInput}
-              onChange={(e) => setUsernameInput(e.target.value)}
+              onChange={(e) => {
+                let val = e.target.value;
+                if (val && !val.startsWith('@')) val = '@' + val.replace('@', '');
+                setUsernameInput(val);
+              }}
+              inputMode="text"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="done"
               style={{ marginBottom: '1rem' }}
             />
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>

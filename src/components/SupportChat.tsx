@@ -232,7 +232,7 @@ export default function SupportChat({ threadId, orderId, modelName, totalPrice }
   if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Загрузка чата...</div>;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '70vh', backgroundColor: 'transparent' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '70dvh', backgroundColor: 'transparent' }}>
       <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {messages.length === 0 ? (
           <div style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: '2rem' }}>
@@ -291,9 +291,11 @@ export default function SupportChat({ threadId, orderId, modelName, totalPrice }
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Сообщение..."
           className="input"
+          inputMode="text"
+          enterKeyHint="send"
           style={{ flex: 1, borderRadius: '20px', backgroundColor: 'var(--bg-color)' }}
         />
-        <button type="submit" className="btn" style={{ borderRadius: '50%', width: '42px', height: '42px', padding: 0, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <button type="submit" className="btn" style={{ borderRadius: '50%', width: '48px', height: '48px', padding: 0, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Send size={18} />
         </button>
       </form>

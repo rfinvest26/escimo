@@ -22,10 +22,7 @@ const CITIES_BY_COUNTRY: Record<string, string[]> = {
 const ITEMS_PER_PAGE = 10;
 
 /** Получить/сохранить рандомный город для конкретной модели в localStorage */
-function getOrAssignCity(modelId: number, country: string, currentCity: string | null | undefined): string {
-  if (currentCity && currentCity.toLowerCase() !== 'unknown' && currentCity.trim() !== '') {
-    return currentCity;
-  }
+function getOrAssignCity(modelId: number, country: string, _currentCity: string | null | undefined): string {
 
   const cacheKey = `model_city_${modelId}_${country}`;
   const cached = localStorage.getItem(cacheKey);
@@ -113,27 +110,32 @@ export default function Catalog() {
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 className="profile-title" style={{ margin: 0, fontSize: '2.5rem' }}>Каталог</h1>
-          <button
-            className="btn-outline"
-            onClick={() => setIsFiltersOpen(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '20px' }}
-          >
-            <Filter size={16} /> Фильтры
-          </button>
-        </div>
 
-        <div style={{ position: 'relative', width: '100%', marginBottom: '0.5rem' }}>
-          <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} size={18} />
-          <input
-            type="text"
-            className="input"
-            placeholder="Поиск по коду, имени или городу..."
-            style={{ paddingLeft: '2.5rem', width: '100%', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: 'var(--card-bg)' }}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', width: '100%' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} size={18} />
+            <input
+              type="search"
+              className="input"
+              placeholder="Поиск (имя, город, код)..."
+              style={{ paddingLeft: '2.5rem', width: '100%', borderRadius: '16px', border: '1px solid var(--border-color)', backgroundColor: 'var(--card-bg)' }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              inputMode="search"
+              enterKeyHint="search"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+            />
+          </div>
+          <button
+            className="btn-secondary"
+            onClick={() => setIsFiltersOpen(true)}
+            style={{ width: '48px', height: '48px', padding: 0, borderRadius: '16px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)' }}
+            aria-label="Фильтры"
+          >
+            <Filter size={20} />
+          </button>
         </div>
       </div>
 
@@ -214,6 +216,7 @@ export default function Catalog() {
           {totalPages > 1 && (
             <div style={{
               display: 'flex',
+              flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.75rem',

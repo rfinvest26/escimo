@@ -34,6 +34,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 h1, h2, h3, h4, h5, h6, .logo, .profile-title, .model-name, .model-price {
@@ -70,6 +74,11 @@ button {
     padding: 0 2.5rem;
   }
 }
+@media (max-width: 400px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
 
 .btn {
   display: inline-flex;
@@ -87,6 +96,7 @@ button {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: none;
   box-shadow: 0 4px 14px var(--accent-glow);
+  min-height: 48px; /* Safe tap target */
 }
 
 .btn:hover {
@@ -139,9 +149,11 @@ button {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 1rem; /* Prevent zoom on iOS Safari */
   font-family: inherit;
   transition: all 0.2s ease;
+  min-height: 48px; /* Safe tap target */
+  appearance: none;
 }
 
 .input:focus {
@@ -158,7 +170,7 @@ button {
 /* Layout */
 .navbar {
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding: 1rem 0;
+  padding: max(1rem, env(safe-area-inset-top)) 0 1rem 0;
   position: sticky;
   top: 0;
   background-color: rgba(5, 5, 5, 0.7);
@@ -207,7 +219,7 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   background-color: var(--card-bg);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
@@ -326,7 +338,7 @@ button {
   max-height: 90vh;
   margin: 0 auto;
   border-radius: 24px 24px 0 0;
-  padding: 1.5rem 1.5rem 2.5rem 1.5rem;
+  padding: 1.5rem 1.5rem max(2.5rem, env(safe-area-inset-bottom)) 1.5rem;
   position: relative;
   overflow-y: auto;
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -458,28 +470,39 @@ button {
 }
 
 .profile-title {
-  font-size: 3rem;
+  font-size: 3.25rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  background: linear-gradient(90deg, #fff 0%, #a1a1aa 100%);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .profile-meta {
   display: flex;
-  gap: 1.5rem;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
-.profile-meta-item {
-  display: flex;
+.meta-chip {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #e4e4e7;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.meta-chip svg {
+  color: var(--accent-color);
 }
 
 .profile-section-title {
@@ -536,4 +559,38 @@ button {
   background-color: rgba(255, 59, 48, 0.1);
   color: var(--error);
   border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+/* Sticky Order Bar */
+.sticky-order-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom)) 1.5rem;
+  background: rgba(18, 18, 20, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 80; /* Below support chat button (90) */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: slideUp 0.4s ease forwards;
+}
+
+@media (min-width: 768px) {
+  .sticky-order-bar {
+    display: none;
+  }
+}
+
+.mobile-hide {
+  display: none;
+}
+@media (min-width: 768px) {
+  .mobile-hide {
+    display: block;
+  }
 }
